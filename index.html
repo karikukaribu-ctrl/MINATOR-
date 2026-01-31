@@ -1,0 +1,1620 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>ELIMINATOR — Clinique Mode</title>
+  <style>
+    :root{
+      --bg:#0b0f0c;
+      --panel:rgba(18,28,20,.65);
+      --panel2:rgba(10,16,12,.55);
+      --line:rgba(90,220,140,.22);
+      --fg:#e9fff2;
+      --muted:rgba(233,255,242,.65);
+      --green:#5cff9a;
+      --green2:#2ae57a;
+      --danger:#ff5c7a;
+      --shadow: 0 18px 60px rgba(0,0,0,.55);
+      --radius:20px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      background:
+        radial-gradient(1200px 800px at 15% -10%, rgba(92,255,154,.14), transparent 55%),
+        radial-gradient(900px 700px at 100% 0%, rgba(42,229,122,.10), transparent 55%),
+        radial-gradient(1000px 900px at 60% 120%, rgba(92,255,154,.08), transparent 60%),
+        var(--bg);
+      color:var(--fg);
+      min-height:100vh;
+      overflow-x:hidden;
+    }
+
+    /* top header outside main frame */
+    header{
+      padding:18px 16px 8px;
+      display:flex;
+      align-items:flex-end;
+      justify-content:space-between;
+      gap:12px;
+    }
+    .brand{
+      display:flex; flex-direction:column; gap:2px;
+    }
+    .brand h1{
+      margin:0;
+      font-size:18px;
+      letter-spacing:.12em;
+      text-transform:uppercase;
+    }
+    .brand .sub{
+      color:var(--muted);
+      font-size:12px;
+      letter-spacing:.08em;
+    }
+    .top-actions{
+      display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end;
+    }
+    .btn{
+      border:1px solid var(--line);
+      background:linear-gradient(180deg, rgba(14,22,16,.65), rgba(10,16,12,.55));
+      color:var(--fg);
+      padding:10px 12px;
+      border-radius:14px;
+      cursor:pointer;
+      box-shadow: 0 10px 28px rgba(0,0,0,.35);
+      transition: transform .08s ease, border-color .2s ease, box-shadow .2s ease;
+      font-size:13px;
+      user-select:none;
+      touch-action:manipulation;
+    }
+    .btn:hover{ border-color: rgba(92,255,154,.45); box-shadow: 0 12px 34px rgba(0,0,0,.42); }
+    .btn:active{ transform: translateY(1px) scale(.99); }
+    .btn.primary{
+      border-color: rgba(92,255,154,.55);
+      box-shadow: 0 14px 40px rgba(42,229,122,.10), 0 18px 60px rgba(0,0,0,.55);
+    }
+    .btn.danger{ border-color: rgba(255,92,122,.35); }
+    .pill{
+      border:1px solid var(--line);
+      background:rgba(8,14,10,.45);
+      padding:8px 10px;
+      border-radius:999px;
+      font-size:12px;
+      color:var(--muted);
+      display:inline-flex;
+      gap:8px;
+      align-items:center;
+      white-space:nowrap;
+    }
+    .dot{
+      width:7px; height:7px; border-radius:50%;
+      background:var(--green);
+      box-shadow: 0 0 14px rgba(92,255,154,.55);
+    }
+
+    /* floating encouragement outside main frame */
+    .floaty{
+      position:relative;
+      padding:0 16px 10px;
+      color:rgba(233,255,242,.78);
+      font-size:12px;
+      line-height:1.25rem;
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+    .floaty span{
+      opacity:.9;
+      border:1px solid rgba(90,220,140,.18);
+      background:rgba(10,16,12,.35);
+      padding:8px 10px;
+      border-radius:999px;
+      backdrop-filter: blur(10px);
+    }
+
+    main{
+      padding:10px 16px 22px;
+      display:grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap:14px;
+      max-width:1100px;
+      margin:0 auto;
+    }
+
+    .card{
+      border:1px solid var(--line);
+      background: linear-gradient(180deg, rgba(18,28,20,.70), rgba(10,16,12,.55));
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(14px);
+      overflow:hidden;
+    }
+    .card h2{
+      margin:0;
+      padding:14px 14px 10px;
+      font-size:14px;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      color:rgba(233,255,242,.92);
+      border-bottom:1px solid rgba(90,220,140,.12);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+    }
+    .card .content{ padding:14px; }
+
+    .grid2{ display:grid; grid-template-columns: 1fr 1fr; gap:10px; }
+    .grid3{ display:grid; grid-template-columns: 1fr 1fr 1fr; gap:10px; }
+
+    .field{
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+    }
+    label{
+      font-size:12px;
+      color:var(--muted);
+    }
+    input, textarea, select{
+      background: rgba(6,10,7,.55);
+      color: var(--fg);
+      border:1px solid rgba(90,220,140,.18);
+      border-radius:14px;
+      padding:10px 10px;
+      font-size:13px;
+      outline:none;
+      transition:border-color .2s ease;
+    }
+    textarea{ min-height: 110px; resize: vertical; }
+    input:focus, textarea:focus, select:focus{ border-color: rgba(92,255,154,.5); }
+    .hint{ font-size:11px; color:rgba(233,255,242,.55); margin-top:6px; }
+
+    .tabs{
+      display:flex;
+      gap:8px;
+      padding:12px 14px;
+      border-bottom:1px solid rgba(90,220,140,.12);
+      flex-wrap:wrap;
+    }
+    .tab{
+      padding:8px 10px;
+      border-radius:999px;
+      border:1px solid rgba(90,220,140,.16);
+      background:rgba(10,16,12,.30);
+      cursor:pointer;
+      font-size:12px;
+      color:rgba(233,255,242,.75);
+      user-select:none;
+    }
+    .tab.active{
+      border-color: rgba(92,255,154,.55);
+      color: rgba(233,255,242,.95);
+      box-shadow: 0 0 18px rgba(92,255,154,.10);
+    }
+
+    /* Eliminator center */
+    .center{
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+    }
+    .bigTask{
+      font-size:18px;
+      font-weight:700;
+      line-height:1.2;
+      letter-spacing:.02em;
+      margin:0;
+    }
+    .metaRow{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      align-items:center;
+      color:var(--muted);
+      font-size:12px;
+    }
+    .barWrap{
+      border:1px solid rgba(90,220,140,.18);
+      background:rgba(6,10,7,.45);
+      border-radius:999px;
+      overflow:hidden;
+      height:18px;
+      position:relative;
+    }
+    .barFill{
+      height:100%;
+      width:100%;
+      background: linear-gradient(90deg, rgba(92,255,154,.95), rgba(42,229,122,.75));
+      box-shadow: inset 0 0 18px rgba(0,0,0,.2);
+      transition: width .25s ease;
+    }
+    .barLabel{
+      position:absolute;
+      inset:0;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:11px;
+      color:rgba(10,16,12,.8);
+      font-weight:800;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      mix-blend-mode: screen;
+    }
+
+    .roulette{
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+      border:1px solid rgba(90,220,140,.14);
+      background:rgba(10,16,12,.30);
+      padding:12px;
+      border-radius:18px;
+    }
+    .wheel{
+      width:54px; height:54px; border-radius:50%;
+      border:1px solid rgba(92,255,154,.40);
+      background:
+        conic-gradient(from 0deg,
+          rgba(92,255,154,.95),
+          rgba(42,229,122,.45),
+          rgba(92,255,154,.75),
+          rgba(42,229,122,.35),
+          rgba(92,255,154,.95));
+      box-shadow: 0 0 24px rgba(92,255,154,.16), inset 0 0 18px rgba(0,0,0,.35);
+    }
+    .spin{ animation: spin 1.2s cubic-bezier(.2,.8,.2,1) 1; }
+    @keyframes spin{ from{ transform: rotate(0deg);} to{ transform: rotate(950deg);} }
+
+    .ctaRow{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+
+    /* Lists */
+    .list{
+      display:flex; flex-direction:column; gap:8px;
+      max-height: 430px;
+      overflow:auto;
+      padding-right:4px;
+    }
+    .item{
+      border:1px solid rgba(90,220,140,.14);
+      background:rgba(8,14,10,.28);
+      padding:10px 10px;
+      border-radius:16px;
+      display:flex;
+      gap:10px;
+      align-items:flex-start;
+      justify-content:space-between;
+    }
+    .item .left{ display:flex; flex-direction:column; gap:4px; min-width:0; }
+    .item .name{ font-size:13px; font-weight:650; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+    .item .small{ font-size:11px; color:rgba(233,255,242,.6); display:flex; gap:8px; flex-wrap:wrap; }
+    .tag{
+      border:1px solid rgba(90,220,140,.18);
+      background:rgba(6,10,7,.35);
+      padding:2px 8px;
+      border-radius:999px;
+    }
+    .item .right{ display:flex; gap:6px; flex-wrap:wrap; justify-content:flex-end; }
+    .mini{ padding:8px 10px; font-size:12px; border-radius:12px; }
+
+    /* Responsive */
+    @media (max-width: 980px){
+      main{ grid-template-columns: 1fr; }
+    }
+    @media (max-width: 480px){
+      .brand h1{ font-size:16px; }
+      .btn{ padding:9px 10px; font-size:12px; }
+      textarea{ min-height: 95px; }
+      .bigTask{ font-size:16px; }
+      .wheel{ width:48px; height:48px; }
+      .card h2{ font-size:13px; }
+    }
+
+    /* Modal */
+    .modalWrap{
+      position:fixed;
+      inset:0;
+      background: rgba(0,0,0,.55);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding:16px;
+      z-index:50;
+    }
+    .modal{
+      width:min(920px, 100%);
+      border:1px solid rgba(90,220,140,.18);
+      background: linear-gradient(180deg, rgba(18,28,20,.85), rgba(10,16,12,.78));
+      border-radius: 22px;
+      box-shadow: 0 30px 120px rgba(0,0,0,.75);
+      backdrop-filter: blur(18px);
+      overflow:hidden;
+    }
+    .modalTop{
+      padding:12px 14px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      border-bottom:1px solid rgba(90,220,140,.12);
+      gap:8px;
+    }
+    .modalTop strong{ font-size:13px; letter-spacing:.08em; text-transform:uppercase; }
+    .modalBody{ padding:14px; }
+    .rowEnd{ display:flex; justify-content:flex-end; gap:8px; flex-wrap:wrap; padding:12px 14px; border-top:1px solid rgba(90,220,140,.12); }
+    .mono{ font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace; }
+  </style>
+</head>
+
+<body>
+<header>
+  <div class="brand">
+    <h1>ELIMINATOR</h1>
+    <div class="sub">Clinique Mode • dégommez les tous (mais gentiment)</div>
+  </div>
+  <div class="top-actions">
+    <button class="btn" id="btnMenu">Menu</button>
+    <button class="btn" id="btnNewDay">Nouveau jour</button>
+    <button class="btn primary" id="btnQuickAdd">Capture</button>
+    <span class="pill" title="Stockage local uniquement (offline)"><span class="dot"></span><span id="statusPill">Local • OK</span></span>
+  </div>
+</header>
+
+<div class="floaty" id="floaty">
+  <span>Prochaine micro-action > perfection.</span>
+  <span>Tu n’as pas besoin de motivation, juste d’un rail.</span>
+  <span>Si tu hésites : roulette.</span>
+</div>
+
+<main>
+  <!-- LEFT: Eliminator engine -->
+  <section class="card">
+    <h2>
+      Exécution
+      <span class="pill"><span id="todayLabel">Aujourd’hui</span> • <span id="countActive">0</span> actives</span>
+    </h2>
+    <div class="content center">
+      <div class="tabs" aria-label="Modes">
+        <div class="tab active" data-tab="run">Run</div>
+        <div class="tab" data-tab="tasks">Tâches</div>
+        <div class="tab" data-tab="import">Import</div>
+        <div class="tab" data-tab="templates">Textes</div>
+        <div class="tab" data-tab="stats">Historique</div>
+        <div class="tab" data-tab="settings">Réglages</div>
+      </div>
+
+      <!-- RUN TAB -->
+      <div class="tabPanel" id="tab-run">
+        <p class="bigTask" id="currentTask">Aucune tâche active. Capture quelque chose.</p>
+
+        <div class="metaRow" id="currentMeta">
+          <span class="tag" id="metaCat">cat: —</span>
+          <span class="tag" id="metaCtx">ctx: —</span>
+          <span class="tag" id="metaTor">torions: —</span>
+          <span class="tag" id="metaPrio">prio: —</span>
+        </div>
+
+        <div class="barWrap" title="Barre inverse: pleine = charge restante">
+          <div class="barFill" id="barFill"></div>
+          <div class="barLabel" id="barLabel">100% restant</div>
+        </div>
+
+        <div class="roulette">
+          <div>
+            <div style="font-size:12px;color:var(--muted);">Sélection</div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:6px;">
+              <select id="modeSelect" title="Mode de choix">
+                <option value="roulette">Roulette (anti-blocage)</option>
+                <option value="ordered">Ordre (tri)</option>
+              </select>
+              <select id="sortSelect" title="Tri pour le mode ordre">
+                <option value="prio_desc">Priorité (haut → bas)</option>
+                <option value="tor_asc">Torions (court → long)</option>
+                <option value="alpha">Alphabetique</option>
+                <option value="created_old">Création (ancien → récent)</option>
+                <option value="created_new">Création (récent → ancien)</option>
+              </select>
+            </div>
+          </div>
+          <div class="wheel" id="wheel" aria-hidden="true"></div>
+        </div>
+
+        <div class="grid2">
+          <div class="field">
+            <label>Filtre contexte</label>
+            <select id="ctxFilter">
+              <option value="">(tous)</option>
+              <option value="hopital">hôpital</option>
+              <option value="pc">pc</option>
+              <option value="telephone">téléphone</option>
+              <option value="maison">maison</option>
+              <option value="2min">2 minutes</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Filtre catégorie</label>
+            <select id="catFilter">
+              <option value="">(toutes)</option>
+              <option value="appels">appels</option>
+              <option value="administratif">administratif</option>
+              <option value="rapports">rapports</option>
+              <option value="consultations">consultations</option>
+              <option value="universite">université</option>
+              <option value="perso">perso</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="ctaRow">
+          <button class="btn primary" id="btnPick">Choisir (roulette/ordre)</button>
+          <button class="btn" id="btnDone">Dégommé ✅</button>
+          <button class="btn" id="btnSkip">Skip</button>
+          <button class="btn" id="btnMinusTorion">-1 torion</button>
+          <button class="btn" id="btnPlusTorion">+1 torion</button>
+        </div>
+
+        <div class="hint">
+          Astuce : “-1 torion” = tu grignotes la charge sans exiger la perfection. C’est une attaque en règle contre la procrastination.
+        </div>
+      </div>
+
+      <!-- TASKS TAB -->
+      <div class="tabPanel" id="tab-tasks" style="display:none;">
+        <div class="grid2">
+          <div class="field">
+            <label>Nom</label>
+            <input id="tName" placeholder="Ex: Appeler patient Dr X (sans identifiants)" />
+          </div>
+          <div class="field">
+            <label>Torions (1 = 5 min)</label>
+            <input id="tTor" type="number" min="1" value="2" />
+          </div>
+        </div>
+
+        <div class="grid3">
+          <div class="field">
+            <label>Catégorie</label>
+            <select id="tCat">
+              <option value="appels">appels</option>
+              <option value="administratif">administratif</option>
+              <option value="rapports">rapports</option>
+              <option value="consultations">consultations</option>
+              <option value="universite">université</option>
+              <option value="perso">perso</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Contexte</label>
+            <select id="tCtx">
+              <option value="hopital">hôpital</option>
+              <option value="pc">pc</option>
+              <option value="telephone">téléphone</option>
+              <option value="maison">maison</option>
+              <option value="2min">2 minutes</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Priorité (1-5)</label>
+            <select id="tPrio">
+              <option value="5">5 (urgent)</option>
+              <option value="4">4</option>
+              <option value="3" selected>3</option>
+              <option value="2">2</option>
+              <option value="1">1 (low)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid2">
+          <div class="field">
+            <label>Tags (séparés par virgules)</label>
+            <input id="tTags" placeholder="Ex: Fedee, cours, déplacement, mail" />
+          </div>
+          <div class="field">
+            <label>Deadline (optionnel)</label>
+            <input id="tDue" type="date" />
+          </div>
+        </div>
+
+        <div class="ctaRow">
+          <button class="btn primary" id="btnAddTask">Ajouter</button>
+          <button class="btn" id="btnClearAll">Tout effacer</button>
+        </div>
+
+        <div style="height:10px"></div>
+        <div class="list" id="taskList"></div>
+      </div>
+
+      <!-- IMPORT TAB -->
+      <div class="tabPanel" id="tab-import" style="display:none;">
+        <div class="field">
+          <label>Colle une liste (n’importe quel format)</label>
+          <textarea id="importBox" placeholder="Ex:
+APPELS
+- Appeler Hugo (2 torions)
+Appeler Samira
+[rapports] Rapport Mme X {tor:6} #urgent
+1) Contacter Dr Y | cat:appels | ctx:telephone | tor:2
+"></textarea>
+          <div class="hint">
+            Le parseur comprend : lignes simples, tirets, numéros, (2 torions), {tor:3}, #tags, [catégorie], ctx:..., prio:...
+          </div>
+        </div>
+        <div class="grid2">
+          <button class="btn primary" id="btnImport">Importer</button>
+          <button class="btn" id="btnImportHelp">Exemples</button>
+        </div>
+      </div>
+
+      <!-- TEMPLATES TAB -->
+      <div class="tabPanel" id="tab-templates" style="display:none;">
+        <div class="grid2">
+          <div class="field">
+            <label>Modèle</label>
+            <select id="tplSelect"></select>
+          </div>
+          <div class="field">
+            <label>Variables (JSON)</label>
+            <input id="tplVars" class="mono" value='{"date":"2026-01-31","heure":"12:15","service":"—"}' />
+          </div>
+        </div>
+        <div class="field">
+          <label>Prévisualisation</label>
+          <textarea id="tplPreview" class="mono"></textarea>
+        </div>
+        <div class="ctaRow">
+          <button class="btn primary" id="btnCopyTpl">Copier</button>
+          <button class="btn" id="btnSaveTpl">Sauver modèle</button>
+          <button class="btn" id="btnNewTpl">Nouveau modèle</button>
+        </div>
+        <div class="hint">
+          Syntaxe variables: {{date}}, {{heure}}, {{service}}… (copier-coller friendly).
+        </div>
+      </div>
+
+      <!-- STATS TAB -->
+      <div class="tabPanel" id="tab-stats" style="display:none;">
+        <div class="grid2">
+          <div class="card" style="box-shadow:none;">
+            <h2>Résumé</h2>
+            <div class="content">
+              <div id="statsSummary" style="color:var(--muted);font-size:13px;line-height:1.5;"></div>
+            </div>
+          </div>
+          <div class="card" style="box-shadow:none;">
+            <h2>Journal</h2>
+            <div class="content">
+              <div class="list" id="dayLog"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SETTINGS TAB -->
+      <div class="tabPanel" id="tab-settings" style="display:none;">
+        <div class="grid2">
+          <div class="field">
+            <label>Pause automatique (minutes)</label>
+            <input id="breakEvery" type="number" min="0" value="45" />
+            <div class="hint">0 = désactivé</div>
+          </div>
+          <div class="field">
+            <label>Heure “Nouveau jour” (déclenche le snapshot)</label>
+            <input id="dayCutoff" type="time" value="04:00" />
+            <div class="hint">Utile si tu bosses tard : la journée “logique” finit à 04:00, pas à minuit.</div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Routines invisibles (auto-tâches)</label>
+          <textarea id="autoRoutines" placeholder="Une ligne = une tâche à regénérer chaque jour.
+Ex: Vérifier horaire des cours et adapter planning consultations | cat:administratif | ctx:pc | tor:2 | prio:4 | #routine
+Ex: Déplacer RDV du 25/02, 04/03, 11/03 (Fedée 12h15–15h15) | cat:administratif | ctx:pc | tor:3 | prio:5 | #routine
+"></textarea>
+        </div>
+
+        <div class="ctaRow">
+          <button class="btn primary" id="btnSaveSettings">Sauver réglages</button>
+          <button class="btn" id="btnExport">Exporter données</button>
+          <button class="btn" id="btnImportData">Importer données</button>
+        </div>
+
+        <div class="hint">
+          Export = JSON (local). Import = écrase tout. Oui, c’est violent. Comme la réalité.
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- RIGHT: Inbox + Next Actions -->
+  <aside class="card">
+    <h2>
+      Inbox & Focus
+      <span class="pill"><span id="inboxCount">0</span> en inbox</span>
+    </h2>
+    <div class="content">
+      <div class="field">
+        <label>Capture ultra-rapide</label>
+        <textarea id="quickBox" placeholder="Balance ici ce qui traverse ton cerveau. Une idée = une ligne."></textarea>
+        <div class="ctaRow">
+          <button class="btn primary" id="btnCaptureLines">Envoyer en inbox</button>
+          <button class="btn" id="btnClearQuick">Vider</button>
+        </div>
+      </div>
+
+      <div style="height:10px"></div>
+
+      <div class="field">
+        <label>Inbox</label>
+        <div class="list" id="inboxList"></div>
+        <div class="hint">But de l’inbox : ne pas oublier. Le tri se fait ensuite.</div>
+      </div>
+    </div>
+  </aside>
+</main>
+
+<!-- MODAL -->
+<div class="modalWrap" id="modalWrap" role="dialog" aria-modal="true">
+  <div class="modal">
+    <div class="modalTop">
+      <strong id="modalTitle">Menu</strong>
+      <button class="btn mini" id="btnCloseModal">Fermer</button>
+    </div>
+    <div class="modalBody" id="modalBody"></div>
+    <div class="rowEnd" id="modalFooter"></div>
+  </div>
+</div>
+
+<script>
+/* ===========================
+   ELIMINATOR — Clinique Mode
+   Local-first, offline.
+   =========================== */
+
+const LS_KEY = "eliminator_clinique_v1";
+const todayISO = () => {
+  // Day cutoff configurable (default 04:00): a late-night friendly "today".
+  const s = load().settings;
+  const cutoff = (s.dayCutoff || "04:00").split(":").map(n=>parseInt(n,10));
+  const now = new Date();
+  const d = new Date(now);
+  const [hh, mm] = cutoff;
+  const cutoffToday = new Date(now.getFullYear(), now.getMonth(), now.getDate(), hh, mm, 0, 0);
+  if(now < cutoffToday) d.setDate(d.getDate()-1);
+  return d.toISOString().slice(0,10);
+};
+
+function defaultData(){
+  return {
+    tasks: [],     // active tasks
+    inbox: [],     // raw capture lines
+    done: [],      // done entries {id, name, date, torions, cat, ctx, prio, tags}
+    dayNotes: {},  // {date: {snapshotAt, stats}}
+    templates: [
+      {
+        id: crypto.randomUUID(),
+        name: "Rapport clinique — squelette",
+        text:
+`Le/la patient·e a été vu·e le {{date}} à {{heure}} au service {{service}}. 
+Motif : {{motif}}.
+Évolution : {{evolution}}.
+Plan : {{plan}}.
+(Ne pas inclure d’identifiants si stockage non sécurisé.)`
+      },
+      {
+        id: crypto.randomUUID(),
+        name: "Mail pro — absence cours",
+        text:
+`Bonjour,
+
+Je vous informe que j’ai manqué le cours du {{date}}. 
+Je rattrape la matière et reste disponible si un document ou une consigne spécifique est nécessaire.
+
+Merci,
+{{signature}}`
+      }
+    ],
+    settings: {
+      breakEvery: 45,
+      dayCutoff: "04:00",
+      autoRoutines: [
+        "Vérifier horaire des cours et adapter planning consultations | cat:administratif | ctx:pc | tor:2 | prio:4 | #routine",
+        "Déplacer RDV du 25/02, 04/03, 11/03 (Fedée 12h15–15h15) | cat:administratif | ctx:pc | tor:3 | prio:5 | #routine"
+      ].join("\n")
+    },
+    ui: {
+      lastPickedId: null,
+      currentId: null,
+      remainingPercent: 100
+    }
+  };
+}
+
+function load(){
+  try{
+    const raw = localStorage.getItem(LS_KEY);
+    if(!raw) return defaultData();
+    const data = JSON.parse(raw);
+    // light migrations
+    const base = defaultData();
+    return {
+      ...base,
+      ...data,
+      settings: {...base.settings, ...(data.settings||{})},
+      ui: {...base.ui, ...(data.ui||{})},
+      templates: Array.isArray(data.templates) ? data.templates : base.templates
+    };
+  }catch(e){
+    console.warn("Load error:", e);
+    return defaultData();
+  }
+}
+
+function save(data){
+  localStorage.setItem(LS_KEY, JSON.stringify(data));
+}
+
+/* ---------- Utilities ---------- */
+const $ = (id) => document.getElementById(id);
+const esc = (s) => (s||"").toString().replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+const clamp = (n,a,b)=>Math.max(a,Math.min(b,n));
+const toInt = (v, d=0)=> {
+  const n = parseInt(v,10);
+  return Number.isFinite(n) ? n : d;
+};
+const prettyDate = (iso)=> {
+  const [y,m,d]=iso.split("-");
+  return `${d}/${m}/${y}`;
+};
+function beep(){
+  // tiny haptic-ish: quick flash of title
+  const t = document.title;
+  document.title = "✅";
+  setTimeout(()=>document.title=t, 220);
+}
+
+/* ---------- Parsing import lines ---------- */
+function parseLine(line, lastCat=null){
+  let s = line.trim();
+  if(!s) return null;
+
+  // category headers like "APPELS", "RAPPORTS"
+  const headerLike = s.toLowerCase();
+  if(headerLike.length <= 22 && /^[a-zàâçéèêëîïôûùüÿñæœ\s]+$/i.test(s) && !/[|{}()[\]#:]/.test(s)){
+    // Probably a header if uppercase or ends with ":" etc.
+    if(s === s.toUpperCase() || s.endsWith(":")) return {type:"header", header: headerLike.replace(":","").trim()};
+  }
+
+  // strip bullet/number prefixes
+  s = s.replace(/^[-•*]\s+/,"").replace(/^\d+[.)]\s+/,"");
+
+  // extract explicit [cat]
+  let cat = lastCat || "";
+  const catMatch = s.match(/^\[([^\]]+)\]\s*/);
+  if(catMatch){
+    cat = catMatch[1].trim().toLowerCase();
+    s = s.slice(catMatch[0].length);
+  }
+
+  // defaults
+  let ctx = "";
+  let prio = 3;
+  let tor = 2;
+  let tags = [];
+
+  // torions: (2 torions) or {tor:3}
+  const tor1 = s.match(/\((\d+)\s*tor/i);
+  if(tor1){ tor = toInt(tor1[1], tor); s = s.replace(tor1[0],"").trim(); }
+  const tor2 = s.match(/\{[^}]*tor\s*:\s*(\d+)[^}]*\}/i);
+  if(tor2){ tor = toInt(tor2[1], tor); s = s.replace(tor2[0],"").trim(); }
+
+  // ctx:telephone etc via "ctx:..."
+  const ctxM = s.match(/\bctx\s*:\s*([a-z0-9_-]+)/i);
+  if(ctxM){ ctx = ctxM[1].toLowerCase(); s = s.replace(ctxM[0],"").trim(); }
+
+  // cat:... inside line
+  const catM = s.match(/\bcat\s*:\s*([a-zàâçéèêëîïôûùüÿñæœ0-9_-]+)/i);
+  if(catM){ cat = catM[1].toLowerCase(); s = s.replace(catM[0],"").trim(); }
+
+  // prio:...
+  const prM = s.match(/\bprio\s*:\s*([1-5])/i);
+  if(prM){ prio = toInt(prM[1], prio); s = s.replace(prM[0],"").trim(); }
+
+  // tags: #foo #bar
+  const hashTags = [...s.matchAll(/#([a-z0-9_-]+)/ig)].map(m=>m[1].toLowerCase());
+  if(hashTags.length){
+    tags.push(...hashTags);
+    s = s.replace(/#([a-z0-9_-]+)/ig,"").trim();
+  }
+
+  // pipes " | key:val"
+  const parts = s.split("|").map(p=>p.trim()).filter(Boolean);
+  let name = parts[0] || "";
+  for(let i=1;i<parts.length;i++){
+    const p = parts[i];
+    const kv = p.split(":").map(x=>x.trim());
+    if(kv.length>=2){
+      const k = kv[0].toLowerCase();
+      const v = kv.slice(1).join(":").toLowerCase();
+      if(k==="cat") cat = v;
+      if(k==="ctx") ctx = v;
+      if(k==="tor" || k==="torions") tor = toInt(v, tor);
+      if(k==="prio") prio = clamp(toInt(v, prio),1,5);
+      if(k==="tag" || k==="tags") tags.push(...v.split(",").map(t=>t.trim()).filter(Boolean));
+    }
+  }
+
+  name = name.trim();
+  if(!name) return null;
+
+  // normalize categories
+  const knownCats = ["appels","administratif","rapports","consultations","universite","perso"];
+  if(cat && !knownCats.includes(cat)){
+    // heuristic mapping
+    const c = cat;
+    if(c.includes("appel")) cat="appels";
+    else if(c.includes("rapport")) cat="rapports";
+    else if(c.includes("consult")) cat="consultations";
+    else if(c.includes("uni") || c.includes("cours")) cat="universite";
+    else if(c.includes("admin")) cat="administratif";
+    else cat="administratif";
+  }
+  if(!cat) cat="administratif";
+
+  // normalize context
+  const knownCtx = ["hopital","pc","telephone","maison","2min"];
+  if(ctx && !knownCtx.includes(ctx)){
+    if(ctx.includes("tel")) ctx="telephone";
+    else if(ctx.includes("hosp")) ctx="hopital";
+    else if(ctx.includes("home")) ctx="maison";
+    else if(ctx.includes("2")) ctx="2min";
+    else ctx="pc";
+  }
+  if(!ctx) ctx="pc";
+
+  return {
+    type:"task",
+    task:{
+      id: crypto.randomUUID(),
+      name,
+      torions: clamp(toInt(tor,2),1,999),
+      cat,
+      ctx,
+      prio: clamp(toInt(prio,3),1,5),
+      tags: [...new Set(tags)].slice(0,12),
+      due: "" ,
+      createdAt: Date.now(),
+      remaining: clamp(toInt(tor,2),1,999)
+    }
+  };
+}
+
+/* ---------- Rendering ---------- */
+function setTab(name){
+  document.querySelectorAll(".tab").forEach(t=>{
+    t.classList.toggle("active", t.dataset.tab===name);
+  });
+  document.querySelectorAll(".tabPanel").forEach(p=>p.style.display="none");
+  $("tab-"+name).style.display="block";
+}
+
+function render(){
+  const data = load();
+  const today = todayISO();
+  $("todayLabel").textContent = "Jour : " + prettyDate(today);
+
+  // inbox
+  $("inboxCount").textContent = data.inbox.length;
+  $("inboxList").innerHTML = data.inbox.length ? data.inbox.map((x, idx)=>`
+    <div class="item">
+      <div class="left">
+        <div class="name">${esc(x.text)}</div>
+        <div class="small">
+          <span class="tag">capturé ${new Date(x.at).toLocaleString()}</span>
+        </div>
+      </div>
+      <div class="right">
+        <button class="btn mini" onclick="promoteInbox(${idx})">Transformer</button>
+        <button class="btn mini danger" onclick="dropInbox(${idx})">Supprimer</button>
+      </div>
+    </div>
+  `).join("") : `<div class="hint">Inbox vide. Ton futur-toi te remercie déjà.</div>`;
+
+  // tasks
+  const activeTasks = data.tasks.filter(t=>!t.done);
+  $("countActive").textContent = activeTasks.length;
+
+  $("taskList").innerHTML = activeTasks.length ? activeTasks
+    .sort((a,b)=> (b.prio-a.prio) || (a.remaining-b.remaining) || (a.name.localeCompare(b.name)))
+    .map(t=>`
+    <div class="item">
+      <div class="left">
+        <div class="name">${esc(t.name)}</div>
+        <div class="small">
+          <span class="tag">cat:${esc(t.cat)}</span>
+          <span class="tag">ctx:${esc(t.ctx)}</span>
+          <span class="tag">tor:${t.remaining}/${t.torions}</span>
+          <span class="tag">prio:${t.prio}</span>
+          ${t.tags?.length ? `<span class="tag">#${esc(t.tags.join(" #"))}</span>` : ""}
+          ${t.due ? `<span class="tag">due:${esc(t.due)}</span>` : ""}
+        </div>
+      </div>
+      <div class="right">
+        <button class="btn mini" onclick="setCurrent('${t.id}')">Focus</button>
+        <button class="btn mini" onclick="editTask('${t.id}')">Éditer</button>
+        <button class="btn mini danger" onclick="removeTask('${t.id}')">X</button>
+      </div>
+    </div>
+  `).join("") : `<div class="hint">Aucune tâche active. Capture ou import.</div>`;
+
+  // current
+  const cur = data.tasks.find(t=>t.id===data.ui.currentId && !t.done) || null;
+  if(!cur){
+    $("currentTask").textContent = activeTasks.length ? "Choisis une tâche (bouton Choisir)." : "Aucune tâche active. Capture quelque chose.";
+    setCurrentMeta(null);
+    setRemainingBar(100);
+  }else{
+    $("currentTask").textContent = cur.name;
+    setCurrentMeta(cur);
+    const pct = clamp(Math.round((cur.remaining / cur.torions)*100), 0, 100);
+    setRemainingBar(pct);
+  }
+
+  // templates
+  renderTemplates();
+
+  // stats
+  renderStats();
+
+  // settings
+  $("breakEvery").value = data.settings.breakEvery ?? 45;
+  $("dayCutoff").value = data.settings.dayCutoff ?? "04:00";
+  $("autoRoutines").value = data.settings.autoRoutines ?? "";
+
+  // status pill
+  $("statusPill").textContent = "Local • " + (navigator.onLine ? "Online" : "Offline");
+}
+
+function setCurrentMeta(t){
+  if(!t){
+    $("metaCat").textContent = "cat: —";
+    $("metaCtx").textContent = "ctx: —";
+    $("metaTor").textContent = "torions: —";
+    $("metaPrio").textContent = "prio: —";
+    return;
+  }
+  $("metaCat").textContent = "cat: " + t.cat;
+  $("metaCtx").textContent = "ctx: " + t.ctx;
+  $("metaTor").textContent = "torions: " + t.remaining + "/" + t.torions;
+  $("metaPrio").textContent = "prio: " + t.prio;
+}
+
+function setRemainingBar(pct){
+  $("barFill").style.width = pct + "%";
+  $("barLabel").textContent = pct + "% restant";
+}
+
+/* ---------- Actions ---------- */
+function addTask(task){
+  const data = load();
+  data.tasks.push(task);
+  save(data);
+  render();
+}
+
+function removeTask(id){
+  const data = load();
+  data.tasks = data.tasks.filter(t=>t.id!==id);
+  if(data.ui.currentId===id) data.ui.currentId=null;
+  save(data);
+  render();
+}
+
+function setCurrent(id){
+  const data = load();
+  const t = data.tasks.find(x=>x.id===id && !x.done);
+  if(!t) return;
+  data.ui.currentId = id;
+  save(data);
+  render();
+}
+
+function promoteInbox(idx){
+  const data = load();
+  const item = data.inbox[idx];
+  if(!item) return;
+  // prefill task form
+  setTab("tasks");
+  $("tName").value = item.text;
+  $("tTor").value = 2;
+  $("tCat").value = "administratif";
+  $("tCtx").value = "pc";
+  $("tPrio").value = 3;
+  $("tTags").value = "";
+  $("tDue").value = "";
+  // remove from inbox
+  data.inbox.splice(idx,1);
+  save(data);
+  render();
+}
+
+function dropInbox(idx){
+  const data = load();
+  data.inbox.splice(idx,1);
+  save(data);
+  render();
+}
+
+function markDoneCurrent(){
+  const data = load();
+  const t = data.tasks.find(x=>x.id===data.ui.currentId && !x.done);
+  if(!t) return;
+  t.done = true;
+  const entry = {
+    id: t.id,
+    name: t.name,
+    date: todayISO(),
+    torions: t.torions,
+    cat: t.cat,
+    ctx: t.ctx,
+    prio: t.prio,
+    tags: t.tags || [],
+    at: Date.now()
+  };
+  data.done.push(entry);
+  data.ui.currentId = null;
+  save(data);
+  beep();
+  render();
+}
+
+function adjustTorion(delta){
+  const data = load();
+  const t = data.tasks.find(x=>x.id===data.ui.currentId && !x.done);
+  if(!t) return;
+  t.remaining = clamp(t.remaining + delta, 0, t.torions);
+  if(t.remaining===0){
+    // auto complete (soft)
+    t.done = true;
+    data.done.push({
+      id: t.id, name: t.name, date: todayISO(),
+      torions: t.torions, cat:t.cat, ctx:t.ctx, prio:t.prio, tags:t.tags||[], at: Date.now()
+    });
+    data.ui.currentId = null;
+    beep();
+  }
+  save(data);
+  render();
+}
+
+function skipTask(){
+  // just pick another without changing anything
+  pickTask();
+}
+
+/* ---------- Picking logic ---------- */
+function filteredTasks(data){
+  const ctxF = $("ctxFilter").value;
+  const catF = $("catFilter").value;
+  return data.tasks.filter(t=>!t.done)
+    .filter(t=> !ctxF || t.ctx===ctxF)
+    .filter(t=> !catF || t.cat===catF);
+}
+
+function pickTask(){
+  const data = load();
+  const list = filteredTasks(data);
+  if(!list.length){
+    flashModal("Aucune tâche filtrée", `
+      <div class="hint">Tes filtres sont peut-être trop stricts. Ou alors tu as tout dégommé (rare, mais magnifique).</div>
+    `, [{label:"OK", cls:"primary", on: closeModal}]);
+    return;
+  }
+
+  const mode = $("modeSelect").value;
+  const wheel = $("wheel");
+  wheel.classList.remove("spin"); void wheel.offsetWidth; wheel.classList.add("spin");
+
+  let chosen = null;
+  if(mode==="roulette"){
+    // roulette but weighted by priority (higher prio => more tickets) and shorter remaining slightly favored
+    const tickets = [];
+    list.forEach(t=>{
+      const pr = clamp(t.prio,1,5);
+      const base = pr * 3;
+      const bonus = Math.max(0, 6 - clamp(t.remaining,1,6)); // short tasks get some love
+      const count = base + bonus;
+      for(let i=0;i<count;i++) tickets.push(t.id);
+    });
+    chosen = list.find(t=>t.id===tickets[Math.floor(Math.random()*tickets.length)]) || list[0];
+  }else{
+    // ordered
+    const sort = $("sortSelect").value;
+    const arr = [...list];
+    arr.sort((a,b)=>{
+      if(sort==="prio_desc") return (b.prio-a.prio) || (a.remaining-b.remaining) || a.name.localeCompare(b.name);
+      if(sort==="tor_asc") return (a.remaining-b.remaining) || (b.prio-a.prio) || a.name.localeCompare(b.name);
+      if(sort==="alpha") return a.name.localeCompare(b.name);
+      if(sort==="created_old") return (a.createdAt-b.createdAt);
+      if(sort==="created_new") return (b.createdAt-a.createdAt);
+      return 0;
+    });
+    // pick first not same as lastPicked when possible
+    chosen = arr.find(t=>t.id!==data.ui.lastPickedId) || arr[0];
+  }
+
+  data.ui.currentId = chosen.id;
+  data.ui.lastPickedId = chosen.id;
+  save(data);
+  render();
+}
+
+/* ---------- Templates ---------- */
+function renderTemplates(){
+  const data = load();
+  const sel = $("tplSelect");
+  sel.innerHTML = data.templates.map(t=>`<option value="${t.id}">${esc(t.name)}</option>`).join("");
+  if(!sel.value && data.templates[0]) sel.value = data.templates[0].id;
+  updateTplPreview();
+}
+
+function updateTplPreview(){
+  const data = load();
+  const id = $("tplSelect").value;
+  const tpl = data.templates.find(t=>t.id===id);
+  if(!tpl){ $("tplPreview").value=""; return; }
+  let vars = {};
+  try{ vars = JSON.parse($("tplVars").value || "{}"); }
+  catch(e){ vars = {}; }
+  let out = tpl.text;
+  out = out.replace(/\{\{(\w+)\}\}/g, (_,k)=> (vars[k] ?? `{{${k}}}`));
+  $("tplPreview").value = out;
+}
+
+function copyTpl(){
+  const txt = $("tplPreview").value;
+  navigator.clipboard.writeText(txt).then(()=>beep());
+}
+
+function newTpl(){
+  const data = load();
+  const id = crypto.randomUUID();
+  data.templates.unshift({id, name:"Nouveau modèle", text:"Texte: {{date}} …"});
+  save(data);
+  renderTemplates();
+  $("tplSelect").value = id;
+  updateTplPreview();
+}
+
+function saveTpl(){
+  const data = load();
+  const id = $("tplSelect").value;
+  const tpl = data.templates.find(t=>t.id===id);
+  if(!tpl) return;
+  flashModal("Sauver modèle", `
+    <div class="field">
+      <label>Nom</label>
+      <input id="modalTplName" value="${esc(tpl.name)}" />
+    </div>
+    <div class="field" style="margin-top:10px;">
+      <label>Texte</label>
+      <textarea id="modalTplText" class="mono">${esc(tpl.text)}</textarea>
+    </div>
+  `, [
+    {label:"Annuler", cls:"", on: closeModal},
+    {label:"Sauver", cls:"primary", on: ()=>{
+      const nm = $("modalTplName").value.trim() || "Modèle";
+      const tx = $("modalTplText").value || "";
+      tpl.name = nm; tpl.text = tx;
+      save(data);
+      closeModal();
+      renderTemplates();
+      updateTplPreview();
+    }}
+  ]);
+}
+
+/* ---------- Stats / Journal ---------- */
+function renderStats(){
+  const data = load();
+  const today = todayISO();
+  const doneToday = data.done.filter(d=>d.date===today);
+  const tor = doneToday.reduce((a,x)=>a+(x.torions||0),0);
+
+  const byCat = {};
+  doneToday.forEach(d=>{
+    byCat[d.cat] = (byCat[d.cat]||0)+1;
+  });
+
+  const active = data.tasks.filter(t=>!t.done).length;
+  const inbox = data.inbox.length;
+
+  const catLines = Object.keys(byCat).sort().map(k=>`• ${k}: ${byCat[k]}`).join("<br>");
+  $("statsSummary").innerHTML =
+    `Jour ${prettyDate(today)}<br><br>`+
+    `• Dégommées: <strong>${doneToday.length}</strong><br>`+
+    `• Torions réalisés: <strong>${tor}</strong> (≈ ${tor*5} min)<br>`+
+    `• Actives restantes: <strong>${active}</strong><br>`+
+    `• Inbox: <strong>${inbox}</strong><br><br>`+
+    (catLines ? `Par catégorie:<br>${catLines}` : `Par catégorie: —`);
+
+  // day log: last 10 days
+  const days = [...new Set(data.done.map(d=>d.date))].sort().reverse().slice(0,10);
+  $("dayLog").innerHTML = days.length ? days.map(day=>{
+    const items = data.done.filter(d=>d.date===day).slice(0,30);
+    const totTor = items.reduce((a,x)=>a+(x.torions||0),0);
+    return `
+      <div class="item">
+        <div class="left">
+          <div class="name">${prettyDate(day)} — ${items.length} tâches — ${totTor} torions</div>
+          <div class="small">${items.map(x=>`<span class="tag">${esc(x.cat)}</span>`).slice(0,10).join(" ")}</div>
+        </div>
+        <div class="right">
+          <button class="btn mini" onclick="showDay('${day}')">Voir</button>
+        </div>
+      </div>
+    `;
+  }).join("") : `<div class="hint">Pas encore d’historique. Commence par une seule tâche dégommée.</div>`;
+}
+
+function showDay(day){
+  const data = load();
+  const items = data.done.filter(d=>d.date===day);
+  const lines = items.map(d=>`• ${d.name} (cat:${d.cat}, ctx:${d.ctx}, tor:${d.torions}, prio:${d.prio})`).join("<br>");
+  flashModal("Journal — "+prettyDate(day), `
+    <div style="font-size:13px;color:var(--muted);line-height:1.6;">
+      ${lines || "—"}
+    </div>
+  `, [{label:"OK", cls:"primary", on: closeModal}]);
+}
+
+/* ---------- Day snapshot / routines ---------- */
+function newDay(){
+  const data = load();
+  const today = todayISO();
+
+  // create routines tasks (if not already present today)
+  const routines = (data.settings.autoRoutines||"").split("\n").map(x=>x.trim()).filter(Boolean);
+  const existingRoutineNames = new Set(data.tasks.filter(t=>!t.done).map(t=>t.name));
+  routines.forEach(r=>{
+    const parsed = parseLine(r, null);
+    if(parsed && parsed.type==="task"){
+      const name = parsed.task.name;
+      if(!existingRoutineNames.has(name)){
+        parsed.task.tags = [...new Set([...(parsed.task.tags||[]), "routine"])];
+        data.tasks.push(parsed.task);
+      }
+    }
+  });
+
+  // snapshot marker
+  data.dayNotes[today] = { snapshotAt: Date.now() };
+  save(data);
+  render();
+  beep();
+}
+
+/* ---------- Export/Import ---------- */
+function exportData(){
+  const data = load();
+  const blob = new Blob([JSON.stringify(data,null,2)], {type:"application/json"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "eliminator_data.json";
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+}
+
+function importDataFromFile(){
+  const input = document.createElement("input");
+  input.type="file";
+  input.accept="application/json";
+  input.onchange = () => {
+    const f = input.files?.[0];
+    if(!f) return;
+    const r = new FileReader();
+    r.onload = () => {
+      try{
+        const obj = JSON.parse(r.result);
+        localStorage.setItem(LS_KEY, JSON.stringify(obj));
+        render();
+        beep();
+      }catch(e){
+        flashModal("Import impossible", `<div class="hint">JSON invalide.</div>`, [{label:"OK", cls:"primary", on: closeModal}]);
+      }
+    };
+    r.readAsText(f);
+  };
+  input.click();
+}
+
+/* ---------- Modal helpers ---------- */
+function flashModal(title, bodyHTML, buttons=[]){
+  $("modalTitle").textContent = title;
+  $("modalBody").innerHTML = bodyHTML;
+  const footer = $("modalFooter");
+  footer.innerHTML = "";
+  buttons.forEach(b=>{
+    const btn = document.createElement("button");
+    btn.className = "btn mini " + (b.cls||"");
+    btn.textContent = b.label;
+    btn.onclick = b.on;
+    footer.appendChild(btn);
+  });
+  $("modalWrap").style.display="flex";
+}
+function closeModal(){ $("modalWrap").style.display="none"; }
+
+/* ---------- Editing tasks ---------- */
+function editTask(id){
+  const data = load();
+  const t = data.tasks.find(x=>x.id===id && !x.done);
+  if(!t) return;
+
+  flashModal("Éditer tâche", `
+    <div class="grid2">
+      <div class="field">
+        <label>Nom</label>
+        <input id="eName" value="${esc(t.name)}" />
+      </div>
+      <div class="field">
+        <label>Torions total</label>
+        <input id="eTor" type="number" min="1" value="${t.torions}" />
+      </div>
+    </div>
+    <div class="grid3" style="margin-top:10px;">
+      <div class="field">
+        <label>Cat</label>
+        <select id="eCat">
+          ${["appels","administratif","rapports","consultations","universite","perso"].map(c=>`<option value="${c}" ${c===t.cat?"selected":""}>${c}</option>`).join("")}
+        </select>
+      </div>
+      <div class="field">
+        <label>Ctx</label>
+        <select id="eCtx">
+          ${["hopital","pc","telephone","maison","2min"].map(c=>`<option value="${c}" ${c===t.ctx?"selected":""}>${c}</option>`).join("")}
+        </select>
+      </div>
+      <div class="field">
+        <label>Prio</label>
+        <select id="ePr">
+          ${[5,4,3,2,1].map(p=>`<option value="${p}" ${p===t.prio?"selected":""}>${p}</option>`).join("")}
+        </select>
+      </div>
+    </div>
+    <div class="grid2" style="margin-top:10px;">
+      <div class="field">
+        <label>Remaining</label>
+        <input id="eRem" type="number" min="0" value="${t.remaining}" />
+      </div>
+      <div class="field">
+        <label>Deadline</label>
+        <input id="eDue" type="date" value="${esc(t.due||"")}" />
+      </div>
+    </div>
+    <div class="field" style="margin-top:10px;">
+      <label>Tags</label>
+      <input id="eTags" value="${esc((t.tags||[]).join(", "))}" />
+    </div>
+  `, [
+    {label:"Annuler", cls:"", on: closeModal},
+    {label:"Sauver", cls:"primary", on: ()=>{
+      t.name = $("eName").value.trim() || t.name;
+      t.torions = clamp(toInt($("eTor").value, t.torions),1,999);
+      t.cat = $("eCat").value;
+      t.ctx = $("eCtx").value;
+      t.prio = clamp(toInt($("ePr").value, t.prio),1,5);
+      t.remaining = clamp(toInt($("eRem").value, t.remaining),0,t.torions);
+      t.due = $("eDue").value || "";
+      t.tags = $("eTags").value.split(",").map(x=>x.trim()).filter(Boolean).slice(0,12);
+      save(data);
+      closeModal();
+      render();
+    }}
+  ]);
+}
+
+/* ---------- Pause coach ---------- */
+let breakTimer = null;
+function resetBreakTimer(){
+  const data = load();
+  const mins = toInt(data.settings.breakEvery, 0);
+  if(breakTimer) clearTimeout(breakTimer);
+  if(!mins || mins<=0) return;
+  breakTimer = setTimeout(()=>{
+    flashModal("Pause micro-cerveau", `
+      <div style="color:var(--muted);font-size:13px;line-height:1.6;">
+        90 secondes. Respire. Bois un truc. Étire les épaules.<br>
+        Objectif: revenir <em>un cran</em> plus lucide.
+      </div>
+    `, [
+      {label:"Je reprends", cls:"primary", on: ()=>{ closeModal(); resetBreakTimer(); }},
+      {label:"+5 min", cls:"", on: ()=>{ closeModal(); const d=load(); d.settings.breakEvery = mins+5; save(d); render(); resetBreakTimer(); }}
+    ]);
+  }, mins*60*1000);
+}
+
+/* ---------- Wire UI ---------- */
+document.querySelectorAll(".tab").forEach(t=>t.addEventListener("click", ()=>setTab(t.dataset.tab)));
+$("btnPick").onclick = ()=>{ pickTask(); resetBreakTimer(); };
+$("btnDone").onclick = ()=>{ markDoneCurrent(); resetBreakTimer(); };
+$("btnSkip").onclick = ()=>{ skipTask(); resetBreakTimer(); };
+$("btnMinusTorion").onclick = ()=>{ adjustTorion(-1); resetBreakTimer(); };
+$("btnPlusTorion").onclick = ()=>{ adjustTorion(+1); resetBreakTimer(); };
+
+$("btnAddTask").onclick = ()=>{
+  const name = $("tName").value.trim();
+  if(!name){
+    flashModal("Nom manquant", `<div class="hint">Donne un nom à la tâche.</div>`, [{label:"OK", cls:"primary", on: closeModal}]);
+    return;
+  }
+  const tor = clamp(toInt($("tTor").value,2),1,999);
+  const task = {
+    id: crypto.randomUUID(),
+    name,
+    torions: tor,
+    remaining: tor,
+    cat: $("tCat").value,
+    ctx: $("tCtx").value,
+    prio: clamp(toInt($("tPrio").value,3),1,5),
+    tags: $("tTags").value.split(",").map(x=>x.trim()).filter(Boolean).slice(0,12),
+    due: $("tDue").value || "",
+    createdAt: Date.now()
+  };
+  addTask(task);
+  $("tName").value="";
+  $("tTags").value="";
+  $("tTor").value=2;
+  resetBreakTimer();
+};
+
+$("btnClearAll").onclick = ()=>{
+  flashModal("Tout effacer ?", `<div class="hint">Supprime toutes les tâches actives et l’inbox. Historique conservé.</div>`, [
+    {label:"Annuler", cls:"", on: closeModal},
+    {label:"Effacer", cls:"danger", on: ()=>{
+      const data = load();
+      data.tasks = [];
+      data.inbox = [];
+      data.ui.currentId=null;
+      save(data);
+      closeModal();
+      render();
+    }}
+  ]);
+};
+
+$("btnCaptureLines").onclick = ()=>{
+  const raw = $("quickBox").value;
+  const lines = raw.split("\n").map(x=>x.trim()).filter(Boolean);
+  if(!lines.length) return;
+  const data = load();
+  lines.forEach(l=>data.inbox.unshift({text:l, at: Date.now()}));
+  save(data);
+  $("quickBox").value="";
+  render();
+  beep();
+  resetBreakTimer();
+};
+
+$("btnClearQuick").onclick = ()=> $("quickBox").value="";
+
+$("btnImport").onclick = ()=>{
+  const raw = $("importBox").value || "";
+  const lines = raw.split("\n");
+  let lastHeader = null;
+  const tasks = [];
+  for(const line of lines){
+    const p = parseLine(line, lastHeader);
+    if(!p) continue;
+    if(p.type==="header"){
+      // map common headers to our cats
+      const h = p.header.toLowerCase();
+      if(h.includes("appel")) lastHeader="appels";
+      else if(h.includes("rapport")) lastHeader="rapports";
+      else if(h.includes("consult")) lastHeader="consultations";
+      else if(h.includes("uni") || h.includes("cours")) lastHeader="universite";
+      else if(h.includes("perso")) lastHeader="perso";
+      else lastHeader="administratif";
+      continue;
+    }
+    if(p.type==="task"){
+      // if header exists and cat missing or generic, apply
+      if(lastHeader && (!p.task.cat || p.task.cat==="administratif")) p.task.cat = lastHeader;
+      tasks.push(p.task);
+    }
+  }
+  if(!tasks.length){
+    flashModal("Rien importé", `<div class="hint">Aucune ligne n’a été reconnue.</div>`, [{label:"OK", cls:"primary", on: closeModal}]);
+    return;
+  }
+  const data = load();
+  data.tasks.push(...tasks);
+  save(data);
+  render();
+  beep();
+  flashModal("Import réussi", `<div class="hint">${tasks.length} tâches ajoutées.</div>`, [{label:"OK", cls:"primary", on: closeModal}]);
+};
+
+$("btnImportHelp").onclick = ()=>{
+  flashModal("Exemples d’import", `
+    <div class="mono" style="font-size:12px;color:var(--muted);line-height:1.6;">
+APPELS<br>
+- Appeler Hugo (2 torions)<br>
+- Appeler Samira #urgent {tor:2} ctx:telephone prio:5<br><br>
+
+[rapports] Rapport mutualité | tor:6 | ctx:pc | prio:4 #deadline<br><br>
+
+1) Vérifier horaires cours | cat:universite | ctx:pc | tor:2<br>
+    </div>
+  `, [{label:"OK", cls:"primary", on: closeModal}]);
+};
+
+$("tplSelect").onchange = updateTplPreview;
+$("tplVars").oninput = updateTplPreview;
+$("btnCopyTpl").onclick = copyTpl;
+$("btnNewTpl").onclick = newTpl;
+$("btnSaveTpl").onclick = saveTpl;
+
+$("btnSaveSettings").onclick = ()=>{
+  const data = load();
+  data.settings.breakEvery = clamp(toInt($("breakEvery").value,45),0,240);
+  data.settings.dayCutoff = $("dayCutoff").value || "04:00";
+  data.settings.autoRoutines = $("autoRoutines").value || "";
+  save(data);
+  render();
+  resetBreakTimer();
+  beep();
+};
+
+$("btnExport").onclick = exportData;
+$("btnImportData").onclick = ()=>{
+  flashModal("Importer données", `<div class="hint">Cela écrase toutes tes données locales actuelles.</div>`, [
+    {label:"Annuler", cls:"", on: closeModal},
+    {label:"Importer", cls:"danger", on: ()=>{ closeModal(); importDataFromFile(); }}
+  ]);
+};
+
+$("btnMenu").onclick = ()=>{
+  flashModal("Menu", `
+    <div class="grid2">
+      <button class="btn primary" onclick="setTab('run'); closeModal();">Aller à Run</button>
+      <button class="btn" onclick="setTab('tasks'); closeModal();">Aller à Tâches</button>
+      <button class="btn" onclick="setTab('import'); closeModal();">Aller à Import</button>
+      <button class="btn" onclick="setTab('templates'); closeModal();">Aller à Textes</button>
+      <button class="btn" onclick="setTab('stats'); closeModal();">Aller à Historique</button>
+      <button class="btn" onclick="setTab('settings'); closeModal();">Aller à Réglages</button>
+    </div>
+  `, [{label:"Fermer", cls:"", on: closeModal}]);
+};
+
+$("btnNewDay").onclick = ()=>{
+  flashModal("Nouveau jour", `<div class="hint">Déclenche un snapshot et regénère les routines invisibles.</div>`, [
+    {label:"Annuler", cls:"", on: closeModal},
+    {label:"Créer", cls:"primary", on: ()=>{ closeModal(); newDay(); }}
+  ]);
+};
+
+$("btnQuickAdd").onclick = ()=>{ setTab("tasks"); $("tName").focus(); };
+
+$("btnCloseModal").onclick = closeModal;
+$("modalWrap").addEventListener("click", (e)=>{ if(e.target === $("modalWrap")) closeModal(); });
+
+window.addEventListener("online", render);
+window.addEventListener("offline", render);
+
+/* boot */
+render();
+resetBreakTimer();
+</script>
+</body>
+</html>
